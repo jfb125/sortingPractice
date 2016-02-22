@@ -13,7 +13,9 @@ public:
 	static void	sort(int *pBase,
 				 	 int num,
 				 	 int (*compare)(const int *, const int *));
-
+	static void reverseSort(int *pBase,
+							int num,
+							int (*compare)(const int *, const int *));
 	insertionSort();
 	virtual ~insertionSort();
 

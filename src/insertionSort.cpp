@@ -56,9 +56,21 @@ void	insertionSort::sort( int *pBase,
 }
 
 
-insertionSort::insertionSort() {
+void	reverseSort::sort( int *pBase, int num, int (*compare)const int *, const int *))
+{
+	int tmp;
+
+	int	last = num-1;
+
+	for (int i = last-2 ; i != 0; i--)
+		for (int j = i; j != num-1; j++)
+			if (pBase[j] > pBase[j+1])
+				exchange(pBase+j, pBase+j+1, sizeof(int));
 }
 
+insertionSort::insertionSort() {
+}
+1
 insertionSort::~insertionSort() {
 }
 
