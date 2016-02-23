@@ -19,7 +19,11 @@ public:
 private:
 	static	void	exch(int *pArray, int i, int j);
 	static	void	printArray(int *pArray, int num, int low, int i, int j);
-	static 	int		partition(int *pArray,
+	static 	int		partitionLeft(int *pArray,
+			 	 	 	 	  int low,
+			 	 	 	 	  int high,
+			 	 	 	 	  int (*compare)(const int *, const int *));
+	static 	int		partitionRight(int *pArray,
 			 	 	 	 	  int low,
 			 	 	 	 	  int high,
 			 	 	 	 	  int (*compare)(const int *, const int *));

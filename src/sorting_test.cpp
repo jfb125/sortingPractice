@@ -146,12 +146,12 @@ int		main( int argc, char* argv[])
 				t	= clock();
 
 		//		sorting::BinaryHeap::sort(p, arraySize, compare);
-				sorting::BubbleSort::sortForward(p, arraySize, compare);
+		//		sorting::BubbleSort::sortForward(p, arraySize, compare);
 		//		sorting::BubbleSort::sortReverse(p, arraySize, compare);
 		//		sorting::insertionSort::forwardSort(p, arraySize, compare);
 		//		sorting::insertionSort::reverseSort(p, arraySize, compare);
 		//		sorting::mergeSort::sort(p, arraySize, compare);
-		//		sorting::quickSort::sort(p, arraySize, compare);
+				sorting::quickSort::sort(p, arraySize, compare);
 		//		sorting::QuickSortWith3Waypartitioning::sort(p, arraySize, compare);
 		//		sorting::selectionSort::sort(p, arraySize, compare);
 
@@ -163,6 +163,7 @@ int		main( int argc, char* argv[])
 //				cout << "After:" << endl;
 //				print(p, arraySize);
 				t	= clock();
+
 				if (!isSorted(p, arraySize, compare))
 				{
 					cout << "Array is not sorted." << endl;
@@ -177,7 +178,7 @@ int		main( int argc, char* argv[])
 		}	// for repeat count
 #define	FLOAT_FORMAT	setw(12) << fixed << setprecision(6)
 
-		cout 	<< "Average of " << NUMBER_OF_TESTS << " passes 'insertion reverse' sorting "
+		cout 	<< "Average of " << NUMBER_OF_TESTS << " passes 'quicksort' sorting "
 				<< setw(5)
 				<< NUMBER_OF_ARRAYS << " arrays of size "
 				<< setw(10)

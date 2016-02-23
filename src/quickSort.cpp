@@ -43,15 +43,18 @@ void	quickSort::sort( int *pArray, int low, int high,
 	if (high <= low)	return;
 	debugOut( "Entering recursive sort() with low = " << low
 		 << " high = " << high << endl);
-	int pposition	= partition(pArray, low, high, compare);
+	int pposition	= partitionLeft(pArray, low, high, compare);
 	debugOut( "Recursive 'partition()' returns " << pposition << endl
 		 << " ------- " << endl);
+
+//	cout << "Press any key "; char q = getchar(); cout << q << endl;
+
 	sort(pArray, low, 			pposition-1,	compare);
 	sort(pArray, pposition+1,	high,	   		compare);
 }
 
 
-int		quickSort::partition( int *pArray,
+int		quickSort::partitionLeft( int *pArray,
 					 	 	  int low,
 					 	 	  int high,
 					 	 	  int (*compare)(const int *, const int *))
@@ -70,18 +73,25 @@ int		quickSort::partition( int *pArray,
 
 	j	= high+1;
 
+	int partitioningValue	= pArray[low];
+	int	partitioningIndex 	= low;
 
-	debugOut( "          low   i   j" << endl);
+//	debugOut( "          low   i   j" << endl);
 	while (true)
 	{
-		debugOut( "Pass   : ");  printQSArray();
+//		debugOut( "Pass   : ");  printQSArray();
 		//	find the leftmost item that is larger
-		//		than the partitioning element
-		//		and thus is not in place
+		//		or equal to the partitioning element
+		//	if the element is larger than the partitioning
+		//		element, it needs to be swapped
+		//	a pre-increment is necessary b/c we to
+		//		not want to advance i once it
+		//		is at the element to be swapped
 
-		while (pArray[++i]-pArray[low] < 0)
+
+		while (pArray[++i] < partitioningValue)
 		{
-			debugOut( "While i: ");	printQSArray();
+//			debugOut( "While i: ");	// printQSArray();
 			if (i == high)		break;
 		}
 
@@ -89,10 +99,13 @@ int		quickSort::partition( int *pArray,
 		//		that are greater than the partitioning element
 		//		and are thus in place
 
-		while (pArray[--j]-pArray[low]	> 0)
+		while (pArray[--j] > partitioningValue)
 		{
-			debugOut( "while j: ");	printQSArray();
-			if (j == low)		break;
+//			debugOut( "while j: ");	// printQSArray();
+			// 	The partitioning element is at low, so
+			//	  while([--j] > [low]) will break out of the loop
+			//		without having to do this check:
+			//if (j == low)		break;
 		}
 
 		if (i >= j)			break;
@@ -103,24 +116,79 @@ int		quickSort::partition( int *pArray,
 		//	exchange them so that
 		//	[i] is less than the partitioning element &&
 		//	[j] is greater than the partitioning element
-		debugOut( "exchange ");
-		printQSArray();
+//		debugOut( "exchange "); //		printQSArray();
 		tmp			= pArray[i];
 		pArray[i]	= pArray[j];
 		pArray[j]	= tmp;
-		debugOut( "         ");
-		printQSArray();
+//		debugOut( "         ");	//		printQSArray();
 	}
 
-	debugOut( "FINAL  : ");
-	tmp			= pArray[low];
-	printQSArray();
-	pArray[low]	= pArray[j];
-	pArray[j]	= tmp;
-	debugOut( "         ");
-	printQSArray();
+	//	Exchange the partition value with the rightmost value < or = to the partition
+//	debugOut( "FINAL  : ");	//	printQSArray();
+	pArray[partitioningIndex]	= pArray[j];
+	pArray[j]					= partitioningValue;
+//	debugOut( "         ");	//	printQSArray();
 
 	return	j;
+}
+
+
+
+#ifndef	uint
+#define	uint	unsigned int
+#endif
+//	Partition using the right most element as the partitioning
+//	left & right must point to their respective end elements i.e. - right = num-1
+
+int		quickSort::partitionRight(int *pArray,
+					 	 	  	  int left,
+								  int right,
+								  int (*compare)(const int *, const int *))
+{
+
+	int		lessThan//partitionRight(pArray, left, lessThan-1, compare);
+	//partitionRight(pArray, lessThan+1, right, compare);
+		= left-1;	// Index that starts at left and moves to the right
+	int		greaterThan		= right;  	// Index that starts at right-1 and moves to the left
+	int		partitionIndex  = right;	// Index &		Value of partitioning element
+	int		partitionValue	= pArray[partitionIndex];
+	int		tmp;
+
+	while (true)
+	{
+
+			//	move to each element rightwards starting at the left & then compare it
+		while (pArray[++lessThan] < partitionValue);
+		//	One element was found that was > or = to partition value
+		//	also, the lessThan index may be at the partitionIndex
+
+		//	move to each element leftwards starting to the left of the partition value
+		while (pArray[--greaterThan] > partitionValue){
+			if(greaterThan == left) break;
+		}
+		//	one element was found that was less than (or equal to) the partitioning value
+
+		//	If the pointers cross, then there are no smaller to the right of lt
+		//	and no larger to the left of gt
+		if (greaterThan <= lessThan)
+			break;
+
+		//	lt is at an element that is larger than (or equal to) the partitionValue
+		//	gt is at an element that is smaller than (or equal to) to the partitionValue
+		//	exchange the two values  If the two values are equal to the partitioning element
+		//		this exchange will not disrupt the process
+		tmp					= pArray[lessThan];
+		pArray[lessThan]	= pArray[greaterThan];
+		pArray[greaterThan]	= tmp;
+
+	}
+
+	//	exchange the partitioning element with the place that has none larger to the left
+	//		and none smaller to the right
+	pArray[partitionIndex]	= pArray[lessThan];
+	pArray[lessThan]		= partitionValue;
+
+	return	lessThan;
 }
 
 
@@ -157,7 +225,9 @@ void	quickSort::printArray(int *p, int high, int low, int i, int j)
 	}
 
 	if (linePos != LINE_SIZE)
-		debugOut(endl);
+		debugOut(endl);//partitionRight(pArray, left, lessThan-1, compare);
+	//partitionRight(pArray, lessThan+1, right, compare);
+
 }
 
 

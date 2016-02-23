@@ -42,22 +42,22 @@ void	mergeSort::sort( int *pArray,
 			i	= lowest;
 			j	= middle;
 
-			for (int k = lowest; k != highest; k++)
+			for (int dst = lowest; dst != highest; dst++)
 			{
 				//	if we do not have any elements in the left half of the array
 				//		keep copying the right half;
-				if (i >= middle)			pDst[k]	= pSrc[j++];
+				if (i >= middle)			pDst[dst]	= pSrc[j++];
 				//	if we do not have any elements in the right half of the array,
 				//		keep copying the left half
-				else if (j >= highest)		pDst[k] = pSrc[i++];
+				else if (j >= highest)		pDst[dst] = pSrc[i++];
 				//	if j is the smaller of the two, take it
 				else if (pSrc[j] < pSrc[i])
-					pDst[k]	= pSrc[j++];
+					pDst[dst]	= pSrc[j++];
 				else
 				//	if i is the smaller, or if the two are equal,
 				//	always move the left one
-					pDst[k]	= pSrc[i++];
-			}	// for k = lowest to highest
+					pDst[dst]	= pSrc[i++];
+			}	// for dst = lowest to highest
 
 			lowest		+= (halfwidth*2);
 			middle		= lowest+halfwidth;
