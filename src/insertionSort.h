@@ -10,7 +10,7 @@
 
 class insertionSort {
 public:
-	static void	sort(int *pBase,
+	static void	forwardSort(int *pBase,
 				 	 int num,
 				 	 int (*compare)(const int *, const int *));
 	static void reverseSort(int *pBase,

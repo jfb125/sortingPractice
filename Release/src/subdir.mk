@@ -5,6 +5,7 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
 ../src/BinaryHeap.cpp \
+../src/BubbleSort.cpp \
 ../src/QuickSortWith3Waypartitioning.cpp \
 ../src/insertionSort.cpp \
 ../src/insertionSort_test.cpp \
@@ -18,6 +19,7 @@ CPP_SRCS += \
 
 OBJS += \
 ./src/BinaryHeap.o \
+./src/BubbleSort.o \
 ./src/QuickSortWith3Waypartitioning.o \
 ./src/insertionSort.o \
 ./src/insertionSort_test.o \
@@ -31,6 +33,7 @@ OBJS += \
 
 CPP_DEPS += \
 ./src/BinaryHeap.d \
+./src/BubbleSort.d \
 ./src/QuickSortWith3Waypartitioning.d \
 ./src/insertionSort.d \
 ./src/insertionSort_test.d \

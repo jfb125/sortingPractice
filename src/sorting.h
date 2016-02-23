@@ -8,7 +8,9 @@
 #ifndef SORTING_H_
 #define SORTING_H_
 
+
 #include "BinaryHeap.h"
+#include "BubbleSort.h"
 #include "insertionSort.h"
 #include "selectionSort.h"
 #include "mergeSort.h"
@@ -17,6 +19,7 @@
 
 class sorting:
 		public BinaryHeap,
+		public BubbleSort,
 		public insertionSort,
 		public mergeSort,
 		public quickSort,

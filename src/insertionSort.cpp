@@ -35,42 +35,61 @@ void	insertionSort::exch(unsigned char *a, unsigned char *b, int size)
 
 
 
-void	insertionSort::sort( int *pBase,
+void	insertionSort::forwardSort( int *pBase,
 			 	 	 	 	 int num,
 			 	 	 	 	 int (*compare)(const int *, const int *))
 {
 	int	tmp;
 
+	//	for every element in the array
+	//		starting at #2 (which is the
+	//		first element to have a predecessor)
 	for (int i = 1; i != num; i++)
 	{
+		//	be prepared to move back to the start
 		for (int j = i; j != 0; j--)
 		{
+			//	If this element is less than the
+			//		previous element, sink the previous
 			if (pBase[j] < pBase[j-1])
 			{
 				tmp			= pBase[j];
 				pBase[j]	= pBase[j-1];
 				pBase[j-1]	= tmp;
 			}
+			else
+				break;
 		}
 	}
 }
 
 
-void	reverseSort::sort( int *pBase, int num, int (*compare)const int *, const int *))
+void	insertionSort::reverseSort( int *pBase, int num, int (*compare)(const int *, const int *))
 {
 	int tmp;
-
 	int	last = num-1;
 
-	for (int i = last-2 ; i != 0; i--)
-		for (int j = i; j != num-1; j++)
-			if (pBase[j] > pBase[j+1])
-				exchange(pBase+j, pBase+j+1, sizeof(int));
+	for (int i = last-1 ; i >= 0; i--)
+	{
+		for (int j = i; j != last; j++)
+		{
+			//	If this element is greater than the next
+			//		sink this element below the next
+			if ( pBase[j] > pBase[j+1]){
+				tmp			= pBase[j];
+				pBase[j]	= pBase[j+1];
+				pBase[j+1]	= tmp;
+			}
+			else
+				break;
+		}
+	}
 }
+
 
 insertionSort::insertionSort() {
 }
-1
+
 insertionSort::~insertionSort() {
 }
 
