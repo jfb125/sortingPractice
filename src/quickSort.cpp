@@ -8,9 +8,6 @@
 #define	debugOut(n)	//debugOut( n
 #define	printQSArray()
 
-//	cout	<< setw(4) << low << setw(4) << i << setw(4) << j << "    ");
-//	printArray(pArray, 8, low, i, j);
-
 #include <iostream>
 #include <iomanip>
 #include <string>

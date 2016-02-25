@@ -13,6 +13,7 @@ public:
 	static void		sort(int *pArray,
 			 	 	 	 int num,
 			 	 	 	 int (*compare)(const int *, const int *));
+
 	quickSort();
 	virtual ~quickSort();
 
@@ -31,6 +32,7 @@ private:
 						 int low,
 						 int high,
 						 int (*compare)(const int *, const int *));
+	static	int		sortSubarray(int *pArray, int low, int high, int (*compare)(const int *, const int *));
 };
 
 #endif /* QUICKSORT_H_ */
