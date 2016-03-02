@@ -7,6 +7,7 @@ CPP_SRCS += \
 ../src/BinaryHeap.cpp \
 ../src/BubbleSort.cpp \
 ../src/QuickSortWith3Waypartitioning.cpp \
+../src/ShellSort.cpp \
 ../src/insertionSort.cpp \
 ../src/insertionSort_test.cpp \
 ../src/mergeSort.cpp \
@@ -21,6 +22,7 @@ OBJS += \
 ./src/BinaryHeap.o \
 ./src/BubbleSort.o \
 ./src/QuickSortWith3Waypartitioning.o \
+./src/ShellSort.o \
 ./src/insertionSort.o \
 ./src/insertionSort_test.o \
 ./src/mergeSort.o \
@@ -35,6 +37,7 @@ CPP_DEPS += \
 ./src/BinaryHeap.d \
 ./src/BubbleSort.d \
 ./src/QuickSortWith3Waypartitioning.d \
+./src/ShellSort.d \
 ./src/insertionSort.d \
 ./src/insertionSort_test.d \
 ./src/mergeSort.d \

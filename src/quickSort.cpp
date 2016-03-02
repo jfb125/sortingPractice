@@ -23,6 +23,7 @@ void	quickSort::sort(int *pArray,
 	if (num < 2)	return;
 
 	sort(pArray, 0,	num-1,	compare);
+//	partitionWithThreeWay(pArray, 0, num-1, compare);
 }
 
 
@@ -30,9 +31,71 @@ void	quickSort::sort( int *pArray, int low, int high,
 					 	 int (*compare)(const int *, const int *))
 {
 	if (high <= low)	return;
-	int pposition	= partitionLeft(pArray, low, high, compare);
+	int pposition	=  partitionWithOnePivot(pArray, low, high, compare);
 	sort(pArray, low, 			pposition-1,	compare);
 	sort(pArray, pposition+1,	high,	   		compare);
+}
+
+
+/*	The goal here is to organize the array into three parts:
+ * 		Less Than partition	:	== Partition	: Greater Than Partition
+ * 		lt	is the index of where the next value 'less than' the partition will go
+ * 		gt	is the index of where the next value 'greater than' the partition will go
+ * 		i is simply the index
+ */
+void	quickSort::swap(int *a, int p, int q){
+	int	tmp	= a[p];
+	a[p] = a[q];
+	a[q] = tmp;
+}
+
+void		quickSort::partitionWithThreeWay(int *a, int low, int high, int (*compare)(const int *, const int *))
+{
+	if (high <= low)	return;
+
+	int 	dstLT	= low;
+	int		dstGT	= high;
+	int		i		= low;
+
+	while (i <= dstGT)
+	{
+		if(a[i] < a[dstLT])			swap(a, i++, dstLT++);
+		else if (a[i] > a[dstLT])	swap(a, i, dstGT--);
+		else						i++;
+	}
+
+	partitionWithThreeWay(a, low, dstLT-1, compare);
+	partitionWithThreeWay(a, dstGT+1, high, compare);
+}
+
+int		quickSort::partitionWithOnePivot(int *a, int low, int high, int (*compare)(const int *, const int *))
+{
+	if (high <= low)	return 0;
+
+	int	lessThan	= low;
+	int	greaterThan	= high+1;
+	int	pivotValue	= a[low];
+	int tmp;
+
+	while(true)
+	{
+		while(a[++lessThan] < pivotValue)
+			if (lessThan == high)
+				break;
+		while(a[--greaterThan] > pivotValue);
+
+		if (lessThan >= greaterThan)
+			break;
+
+		tmp				= a[lessThan];
+		a[lessThan]		= a[greaterThan];
+		a[greaterThan]	= tmp;
+	}
+
+	a[low]			= a[greaterThan];
+	a[greaterThan]	= pivotValue;
+
+	return	greaterThan;
 }
 
 

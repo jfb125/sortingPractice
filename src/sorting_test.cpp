@@ -5,6 +5,8 @@
  *      Author: owner
  */
 
+#define	FLOAT_FORMAT	setw(12) << fixed << setprecision(6)
+
 #include <iostream>
 #include <iomanip>
 #include <cassert>
@@ -16,13 +18,116 @@
 
 using namespace std;
 
-void	print(int *p, int size);
-int		compare(const int *pLarger, const int *pSmaller);
-bool	isSorted(const int *p, const int num, int (*compare)(const int *, const int *));
-
 #define	NUMBER_OF_ARRAYS			1024
 #define	ELEMENTS_IN_LARGEST_ARRAY	65536
-#define	NUMBER_OF_TESTS				1
+#define	NUMBER_OF_TESTS				16
+
+int		compare(const int *pLarger, const int *pSmaller);
+void	getMemory(int ***ppp, int numArrays, int numElements);
+bool	isSorted(const int *p, const int num, int (*compare)(const int *, const int *));
+void	print(int *p, int size);
+void	printTimeReport(int num, int size, int passes, const char *name, unsigned elapsedClicks);
+void	releaseMemory(int ***ppp, int numArrays);
+
+int		main( int argc, char* argv[])
+{
+	const char	*sortName;
+	void		(*sort)(int *, int , int (*)(const int *, const int *));
+
+	//sortName	= "binary heap sort"
+	//sort 		=		sorting::BinaryHeap::sort(p, arraySize, compare);
+	//sort 		=		sorting::BubbleSort::sortForward(p, arraySize, compare);
+	//sort 		=		sorting::BubbleSort::sortReverse(p, arraySize, compare);
+	//sort 		=		sorting::insertionSort::forwardSort(p, arraySize, compare);
+	//sort 		=		sorting::insertionSort::reverseSort(p, arraySize, compare);
+	//sortName 	= 	"merge sort";
+	//sort 		= 	sorting::mergeSort::sort;
+	//sort 		=	sorting::mergeSort::sort(p, arraySize, compare);
+	sortName	= 	"quick sort";
+	sort 		=	sorting::quickSort::sort;
+	//sortName	= 	"shell sort";
+	//sort 		=	sorting::ShellSort::sort;
+
+	//sortName	= "selection sort";
+	//sort =		sorting::selectionSort::sort;
+
+	clock_t	t;
+	unsigned totalTime	= 0;
+
+	srand (time(NULL));
+
+	int	**arrays;
+
+	try
+	{
+		arrays	= new int *[NUMBER_OF_ARRAYS];
+	}
+	catch (std::bad_alloc& ba)
+	{
+		cout << "Pointer to pointer to int, bad_aloc caught: " << ba.what() << endl;
+		exit(-1);
+	}
+
+
+	for (int i = 0; i != NUMBER_OF_ARRAYS; i++)
+	{
+		try
+		{
+			arrays[i]	= new int [ELEMENTS_IN_LARGEST_ARRAY];
+		}
+		catch (std::bad_alloc& ba)
+		{
+			cout << "Pointer to type int #" << i << ", bad_alloc: " << ba.what() << endl;
+			exit(-1);
+		}
+	}
+
+
+//	t	= clock();
+//	for (int i = 0; i != NUMBER_OF_ARRAYS; i++)
+//	{
+//		for (int j = 0; j != ELEMENTS_IN_LARGEST_ARRAY; j++)
+//			arrays[i][j]	= rand() % ELEMENTS_IN_LARGEST_ARRAY;
+//	}
+//	t	= clock()-t;
+
+//	cout	<< "It took " << t << " clicks to load arrays with random numbers" << endl;
+
+	for (int arraySize = 256; arraySize < ELEMENTS_IN_LARGEST_ARRAY; arraySize <<= 1)
+	{
+		totalTime	= 0;
+		for (int repeatCounter = 0; repeatCounter != NUMBER_OF_TESTS; repeatCounter++)
+		{
+			for (int i = 0; i != NUMBER_OF_ARRAYS; i++)
+				for (int j = 0; j != arraySize; j++)
+					arrays[i][j]	= rand() % arraySize;
+
+			for (int arrayNumber = 0; arrayNumber != NUMBER_OF_ARRAYS; arrayNumber++)
+			{
+
+				t	= clock();
+				sort(arrays[arrayNumber], arraySize, compare);
+				totalTime	+= clock()-t;
+
+				if (!isSorted(arrays[arrayNumber], arraySize, compare))
+				{
+					cout << "Array is not sorted." << endl;
+					releaseMemory(&arrays, NUMBER_OF_ARRAYS);
+					return -1;
+				}
+			}	//	for every array
+		}	// for repeat count
+
+		printTimeReport(NUMBER_OF_ARRAYS, arraySize, NUMBER_OF_TESTS, sortName, totalTime);
+
+	}	// for array size
+
+	releaseMemory(&arrays, NUMBER_OF_ARRAYS);
+
+	cout << "Complete" << endl;
+	return 0;
+}
+
 
 void	getMemory(int ***ppp, int numArrays, int numElements)
 {
@@ -59,6 +164,26 @@ void	getMemory(int ***ppp, int numArrays, int numElements)
 }
 
 
+void	print(int *p, int size)
+{
+#undef	_SORTING_TEST_LINE_SIZE
+#define	_SORTING_TEST_LINE_SIZE	16
+	int	elementCounter	= _SORTING_TEST_LINE_SIZE;
+
+	for (int i = 0; i != size; i++)
+	{
+		cout << setw(8) << *p++ << ' ';
+		if(--elementCounter == 0)
+		{
+			elementCounter	= _SORTING_TEST_LINE_SIZE;
+			cout << endl;
+		}
+	}
+
+	if (elementCounter != _SORTING_TEST_LINE_SIZE)	cout << endl;
+}
+
+
 void	releaseMemory(int ***ppp, int numArrays)
 {
 	if (**ppp)
@@ -66,156 +191,15 @@ void	releaseMemory(int ***ppp, int numArrays)
 		for (int i = 0; i != numArrays; i++)
 			if ((*ppp)[i])
 			{
-//				cout << "Deleting (*ppp)[" << i << "] " << (*ppp)[i] << endl;
 				delete[]	(*ppp)[i];
 				(*ppp)[i]	= nullptr;
 			}
 
 		delete[]	(*ppp);
-//		cout << "Deleting " << *ppp << endl;
 		*ppp	= nullptr;
 	}
 }
 
-
-//charBinaryHeap	loadValues[]	= "PABXWPPVPDPCYZ";
-//char	loadValues[]	= "RBWWRWBRRWBR";
-//const	int	problemValues[]	= {3,    0,    5,    1,    4,    5,    6,    0};
-
-int		main( int argc, char* argv[])
-{
-	clock_t	t;
-	unsigned totalTime	= 0;
-
-	srand (time(NULL));
-
-	int	**arrays;
-
-	try
-	{
-		arrays	= new int *[NUMBER_OF_ARRAYS];
-	}
-	catch (std::bad_alloc& ba)
-	{
-		cout << "Pointer to pointer to int, bad_aloc caught: " << ba.what() << endl;
-		exit(-1);
-	}
-
-
-	for (int i = 0; i != NUMBER_OF_ARRAYS; i++)
-	{
-		try
-		{
-			arrays[i]	= new int [ELEMENTS_IN_LARGEST_ARRAY];
-		}
-		catch (std::bad_alloc& ba)
-		{
-			cout << "Pointer to type int #" << i << ", bad_alloc: " << ba.what() << endl;
-			exit(-1);
-		}
-	}
-
-
-	t	= clock();
-	for (int i = 0; i != NUMBER_OF_ARRAYS; i++)
-	{
-		for (int j = 0; j != ELEMENTS_IN_LARGEST_ARRAY; j++)
-			arrays[i][j]	= rand() % ELEMENTS_IN_LARGEST_ARRAY;
-	}
-	t	= clock()-t;
-
-	cout	<< "It took " << t << " clicks to load arrays with random numbers" << endl;
-	unsigned passTime;
-
-	for (int arraySize = 256; arraySize < ELEMENTS_IN_LARGEST_ARRAY; arraySize <<= 1)
-	{
-		int	*p = new int [arraySize];
-
-		for (int repeatCounter = 0; repeatCounter != NUMBER_OF_TESTS; repeatCounter++)
-		{
-			for (int arrayNumber = 0; arrayNumber != NUMBER_OF_ARRAYS; arrayNumber++)
-			{
-				passTime	= clock();
-
-				memcpy(p, arrays[arrayNumber], arraySize*sizeof(int));
-
-//				cout << "Pass #" << arrayNumber << endl
-//					 <<	" before: " << endl;
-//				print(p, arraySize);
-
-				t	= clock();
-
-		//		sorting::BinaryHeap::sort(p, arraySize, compare);
-		//		sorting::BubbleSort::sortForward(p, arraySize, compare);
-		//		sorting::BubbleSort::sortReverse(p, arraySize, compare);
-		//		sorting::insertionSort::forwardSort(p, arraySize, compare);
-		//		sorting::insertionSort::reverseSort(p, arraySize, compare);
-		//		sorting::mergeSort::sort(p, arraySize, compare);
-				sorting::quickSort::sort(p, arraySize, compare);
-		//		sorting::QuickSortWith3Waypartitioning::sort(p, arraySize, compare);
-		//		sorting::selectionSort::sort(p, arraySize, compare);
-
-				unsigned	deltaTime = clock()-t;
-				totalTime	+= deltaTime;
-
-//				cout	<< "It took " << deltaTime << " clicks to sort the array" << endl;
-
-//				cout << "After:" << endl;
-//				print(p, arraySize);
-				t	= clock();
-
-				if (!isSorted(p, arraySize, compare))
-				{
-					cout << "Array is not sorted." << endl;
-					releaseMemory(&arrays, NUMBER_OF_ARRAYS);
-					return -1;
-				}
-				passTime	= clock() - passTime;
-//				cout	<< "It took " << passTime << " to go through  sorting & check #" << arrayNumber << endl;
-//					print(pArray, j);
-			}	//	for every array
-
-		}	// for repeat count
-#define	FLOAT_FORMAT	setw(12) << fixed << setprecision(6)
-
-		cout 	<< "Average of " << NUMBER_OF_TESTS << " passes 'quicksort' sorting "
-				<< setw(5)
-				<< NUMBER_OF_ARRAYS << " arrays of size "
-				<< setw(10)
-				<< arraySize 		<< " took me "
-				<< FLOAT_FORMAT
-				<< totalTime/10 	<< " clicks ("
-				<< FLOAT_FORMAT
-				<< ((double)totalTime)/CLOCKS_PER_SEC/NUMBER_OF_TESTS
-				<< " seconds)." << endl;
-
-	}	// for array size
-
-	releaseMemory(&arrays, NUMBER_OF_ARRAYS);
-
-	cout << "Complete" << endl;
-	return 0;
-}
-
-
-void	print(int *p, int size)
-{
-#undef	LINE_SIZE
-#define	LINE_SIZE	16
-	int	elementCounter	= LINE_SIZE;
-
-	for (int i = 0; i != size; i++)
-	{
-		cout << setw(8) << *p++ << ' ';
-		if(--elementCounter == 0)
-		{
-			elementCounter	= LINE_SIZE;
-			cout << endl;
-		}
-	}
-
-	if (elementCounter != LINE_SIZE)	cout << endl;
-}
 
 int		compare(const int *a, const int *b)
 {
@@ -239,3 +223,13 @@ bool	isSorted(const int *p, const int num, int (*compare)(const int*, const int*
 	return true;
 }
 
+void	printTimeReport(int num, int size, int passes, const char *name, unsigned elapsedClicks)
+{
+	cout 	<< "Total of " << passes << " passes of " << name
+			<< setw(5)	<< num 				<< " arrays of size "
+			<< setw(10)	<< size 			<< " took me "
+//			<< setw(12) << elapsedClicks 	<< " clicks ("
+			<< setw(12) << fixed << setprecision(6)
+			<< ((double)elapsedClicks)/CLOCKS_PER_SEC
+			<< " seconds." << endl;
+}

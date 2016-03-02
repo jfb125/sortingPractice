@@ -16,6 +16,7 @@
 #include "mergeSort.h"
 #include "quickSort.h"
 #include "QuickSortWith3Waypartitioning.h"
+#include "ShellSort.h"
 
 class sorting:
 		public BinaryHeap,
@@ -24,7 +25,8 @@ class sorting:
 		public mergeSort,
 		public quickSort,
 		public QuickSortWith3Waypartitioning,
-		public selectionSort
+		public selectionSort,
+		public ShellSort
 {
 public:
 	sorting();

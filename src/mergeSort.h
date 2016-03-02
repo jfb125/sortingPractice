@@ -16,6 +16,8 @@ public:
 
 	static	void printArray(int *p, int num);
 
+	static	const char *getName();
+
 	mergeSort();
 	virtual ~mergeSort();
 
